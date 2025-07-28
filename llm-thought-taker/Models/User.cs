@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace llm_thought_taker.Models;
 
@@ -26,6 +27,7 @@ public class User
     [Column("external_id")]
     public string ExternalId { get; set; } = "";
     
+    [JsonIgnore]
     public ICollection<Note> Notes { get; set; }
 
 }
