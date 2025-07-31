@@ -7,7 +7,6 @@ using llm_thought_taker.Data;
 using Microsoft.Extensions.Hosting;
 using GenerativeAI;
 
-
 var builder = FunctionsApplication.CreateBuilder(args);
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
@@ -26,9 +25,6 @@ var geminiApiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
 var googleAI = new GoogleAi(geminiApiKey);
 var model = googleAI.CreateGenerativeModel("models/gemini-2.0-flash-lite");
 
-// builder.Services.AddSingleton(googleAI);
 builder.Services.AddSingleton(model);
-
-
 
 builder.Build().Run();

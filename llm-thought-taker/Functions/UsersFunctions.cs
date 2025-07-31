@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using System.Net;
 using llm_thought_taker.Data;
 using llm_thought_taker.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace llm_thought_taker.Functions;
 
@@ -43,5 +44,23 @@ public class UsersFunctions
         await res.WriteAsJsonAsync(users);
         return res;
     }
+    
+    [Function("DeleteUser")]
+    public async Task<HttpResponseData> DeleteUser(
+        [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "user/{externalUserId}")] HttpRequestData req, string externalUserId)
+    {
+        var user = await _db.Users.Where(u => u.ExternalId == externalUserId).SingleOrDefaultAsync();
+        if (user == null)
+        {
+           var badRes = req.CreateResponse(HttpStatusCode.NotFound); 
+           await badRes.WriteAsJsonAsync(new { message = "User not found" });
+           return badRes;
+        }
+        _db.Users.Remove(user);
+        await _db.SaveChangesAsync();
+        var res = req.CreateResponse(HttpStatusCode.OK);
+        await res.WriteAsJsonAsync(new { message = "User Deleted Successfully", user });;
+        return res;
+    } 
 
 }
