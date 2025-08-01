@@ -115,7 +115,7 @@ public class NotesFunctions
     {
         try
         {
-            var notes = await _db.Users.Where(u => u.ExternalId == externalUserId).SelectMany(u => u.Notes).ToListAsync();
+            var notes = await _db.Users.Where(u => u.ExternalId == externalUserId).SelectMany(u => u.Notes).OrderByDescending(note => note.Created).ToListAsync();
             if (notes.Count == 0)
             {
                 var badRes = req.CreateResponse(HttpStatusCode.NotFound);
