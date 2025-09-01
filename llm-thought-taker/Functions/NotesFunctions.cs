@@ -134,6 +134,16 @@ public class NotesFunctions
         }
     }
     
+    [Function("HealthCheck")]
+    public async Task<HttpResponseData> HealthCheck(
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "health")] HttpRequestData req)
+    {
+            var res = req.CreateResponse(HttpStatusCode.OK);
+            await res.WriteAsJsonAsync(new { message = "OK" });;
+            return res;
+        
+    }
+    
     [Function("GenerateChatResponse")]
     public async Task<HttpResponseData> GenerateChatResponse(
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "generate_chat")] HttpRequestData req)
