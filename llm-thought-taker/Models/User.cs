@@ -28,6 +28,6 @@ public class User
     public string ExternalId { get; set; } = "";
     
     [JsonIgnore]
-    public ICollection<Note> Notes { get; set; }
+    public ICollection<Note> Notes { get; set; } = new List<Note>();
 
 }

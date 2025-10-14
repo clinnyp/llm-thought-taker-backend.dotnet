@@ -28,5 +28,5 @@ public class Note
     [Column("userId")]
     public Guid UserId { get; set; }
     [JsonIgnore]
-    public User User { get; set; }
+    public User User { get; set; } = null!;
 }
