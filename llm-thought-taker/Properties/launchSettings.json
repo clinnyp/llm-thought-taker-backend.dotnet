@@ -3,7 +3,10 @@
     "llm_thought_taker": {
       "commandName": "Project",
       "commandLineArgs": "--port 7172",
-      "launchBrowser": false
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }
