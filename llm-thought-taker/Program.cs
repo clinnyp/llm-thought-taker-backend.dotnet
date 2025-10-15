@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using GenerativeAI;
 using llm_thought_taker.Endpoints;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +25,31 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Database configuration
+// Authentication & Authorization
+var clerkDomain = Environment.GetEnvironmentVariable("CLERK_DOMAIN")
+    ?? builder.Configuration["ClerkDomain"];
 
+if (string.IsNullOrEmpty(clerkDomain))
+{
+    throw new InvalidOperationException("Clerk domain is not configured. Set CLERK_DOMAIN environment variable or add to appsettings.json");
+}
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = $"https://{clerkDomain}";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            NameClaimType = "name",
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+// Database configuration
 var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
